@@ -23,7 +23,7 @@ type MapState = {
 	mapCenter: leaflet.LatLng;
 	tags: string[];
 	version: number;
-} 
+}
 
 export class MapView extends ItemView {
 	private settings: PluginSettings;
@@ -364,6 +364,18 @@ export class MapView extends ItemView {
 		this.display.clusterGroup.addLayers(markersToAdd);
 		this.display.clusterGroup.removeLayers(markersToRemove);
 		this.display.markers = newMarkersMap;
+		this.updateMapLines();
+	}
+
+	/**
+	 * Takes the markers on the map, sorts them by the creation time and draws a line between them.
+	 */
+	updateMapLines() {
+		let locationsByDate: leaflet.LatLng[] = Array.from(this.display.markers.values())
+			.sort((markerA, markerB) => markerA.getCreationTime() - markerB.getCreationTime())
+			.map(marker => marker.location);
+
+		leaflet.polyline(locationsByDate).addTo(this.display.map);
 	}
 
 	private newLeafletMarker(marker: FileMarker) : leaflet.Marker {

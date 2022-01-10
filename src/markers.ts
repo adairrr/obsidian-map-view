@@ -48,6 +48,10 @@ export class FileMarker {
 	generateId() : MarkerId {
 		return this.file.name + this.location.lat.toString() + this.location.lng.toString();
 	}
+
+	getCreationTime(): number {
+		return this.file.stat.ctime;
+	}
 }
 
 export type MarkersMap = Map<MarkerId, FileMarker>;
